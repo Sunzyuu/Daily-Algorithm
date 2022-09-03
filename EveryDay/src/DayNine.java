@@ -417,14 +417,11 @@ public class DayNine {
                 start = i + 1;
             }
         }
-
         for (int i = start; i < chars.length; i++) {
             chars[i] = '9';
         }
-
         return Integer.parseInt(String.valueOf(chars));
     }
-
 
     /**
      * 714. 买卖股票的最佳时机含手续费
@@ -438,9 +435,56 @@ public class DayNine {
      */
     public int maxProfit(int[] prices, int fee) {
         int res = 0;
+        int minPrice = prices[0] + fee;
+        for (int price : prices) {
+            if(price + fee < minPrice){
+                minPrice = price + fee;
+            }else if(price > minPrice){
+                res += price - minPrice;
+                minPrice = price;
+            }
+        }
+        return res;
+    }
 
 
-        return 0;
+    /**
+     * 968. 监控二叉树
+     * 给定一个二叉树，我们在树的节点上安装摄像头。
+     * 节点上的每个摄影头都可以监视其父对象、自身及其直接子对象。
+     * 计算监控树的所有节点所需的最小摄像头数量
+     * @param root
+     * @return
+     */
+    private static int res = 0;
+    public static int minCameraCover(TreeNode root) {
+        if(minCamera(root) == 0){
+            res++;
+        }
+        return res;
+    }
+    /**
+     节点的状态值：
+     0 表示无覆盖
+     1 表示 有摄像头
+     2 表示有覆盖
+     后序遍历，根据左右节点的情况,来判读 自己的状态
+     */
+    private static int minCamera(TreeNode root) {
+        if(root == null){
+            return 2;
+        }
+        int left = minCamera(root.left);
+        int right = minCamera(root.right);
+
+        if(left == 2 && right == 2){
+            return 0;
+        }else if(left ==0 || right == 0){
+            res++;
+            return 1;
+        }else {
+            return 2;
+        }
     }
 
     public static void main(String[] args) {
