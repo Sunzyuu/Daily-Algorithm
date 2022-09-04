@@ -252,8 +252,6 @@ public class DayThree {
 //        ArrayList<Integer> res = new ArrayList<>();
 //        inorder(root, res);
 //        return res;
-
-
         /**
          *
          */
@@ -375,13 +373,14 @@ public class DayThree {
      * 104. 二叉树的最大深度
      * 给定一个二叉树，找出其最大深度。
      * 二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+     *
      * @param root
      * @return
      */
     public static int maxDepth(TreeNode root) {
-        if(root == null){
+        if (root == null) {
             return 0;
-        }else{
+        } else {
             return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
         }
     }
@@ -392,25 +391,25 @@ public class DayThree {
          * 执行用时：1 ms, 在所有 Java 提交中击败了20.74%的用户
          * 内存消耗：41.4 MB, 在所有 Java 提交中击败了19.34%的用户
          */
-        if(root == null){
+        if (root == null) {
             return 0;
         }
         Queue<TreeNode> queue = new LinkedList<>();
         int deepth = 0;
         queue.offer(root);
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             // 首先将本层的节点全部加入queue中，size记录每一层的节点数量
             // 当当前层级的节点全部遍历完成则depth++
             int size = queue.size();
-            while(size > 0){
+            while (size > 0) {
                 root = queue.poll();
-                if(root.left != null){
+                if (root.left != null) {
                     queue.offer(root.left);
                 }
-                if(root.right != null){
+                if (root.right != null) {
                     queue.offer(root.right);
                 }
-                size --;
+                size--;
             }
             deepth++;
 
@@ -423,6 +422,7 @@ public class DayThree {
      * 110. 平衡二叉树
      * 给定一个二叉树，判断它是否是高度平衡的二叉树。
      * 本题中，一棵高度平衡二叉树定义为：一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1 。
+     *
      * @param root
      * @return
      */
@@ -432,16 +432,16 @@ public class DayThree {
          * 执行用时:1 ms ,在所有Java提交中击败了44.94%的用户
          * 内存消耗:40.7MB ，在所有Java提交中击败了95.37%的用户
          */
-        if(root == null )
+        if (root == null)
             return true;
         Deque<TreeNode> stack = new LinkedList<>();
-        while( root!= null || !stack.isEmpty()){
-            while(root!=null){
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
                 stack.push(root);
                 root = root.left;
             }
             root = stack.pop();
-            if(Math.abs(maxDepth(root.right )- maxDepth(root.left)) > 1){
+            if (Math.abs(maxDepth(root.right) - maxDepth(root.left)) > 1) {
                 return false;
             }
             root = root.right;
@@ -457,16 +457,16 @@ public class DayThree {
         return height(root) >= 0;
     }
 
-    private static int height(TreeNode root){
-        if(root == null){
+    private static int height(TreeNode root) {
+        if (root == null) {
             return 0;
         }
         int leftHeith = height(root.left);
         int rightHeith = height(root.right);
 
-        if(leftHeith == -1 || rightHeith == -1 || (Math.abs(leftHeith - rightHeith) > 1)){
+        if (leftHeith == -1 || rightHeith == -1 || (Math.abs(leftHeith - rightHeith) > 1)) {
             return -1;
-        }else {
+        } else {
             return Math.max(leftHeith, rightHeith) + 1;
         }
     }
@@ -475,6 +475,7 @@ public class DayThree {
     /**
      * 226. 翻转二叉树
      * 给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
+     *
      * @param root
      * @return
      */
@@ -513,7 +514,7 @@ public class DayThree {
          * 执行用时:0 ms ,在所有Java提交中击败了100.00%的用户
          * 内存消耗:39.3 MB ，在所有Java提交中击败了14.08%的用户
          */
-        if(root == null){
+        if (root == null) {
             return null;
         }
         invertTree(root.left);

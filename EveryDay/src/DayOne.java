@@ -34,12 +34,10 @@ public class DayOne {
         // 注意数组的边界，由于左右指针的存在，边界是数组长度-2
         for (int i = 0; i < nums.length - 2; i++) {
             int traget = 0 - nums[i];
-
             // 跳过数组中重复的元素
             if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
-
             // 定义左右指针， 寻找 nums[left]+nums[right] == target
             int left = i + 1;
             int right = nums.length - 1;
@@ -63,39 +61,40 @@ public class DayOne {
     }
 
 
-    public static ListNode addTwoNumbers(ListNode l1, ListNode l2){
-        ListNode head=null, tail=null;    // 用于存放结果的链表的头和尾
+    public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode head = null, tail = null;    // 用于存放结果的链表的头和尾
         int value1 = 0, value2 = 0;
         int more = 0;  //value1与value2相加产生的进位
         // 遍历两个链表
-        while(l1 != null || l2 !=null ){
+        while (l1 != null || l2 != null) {
             // 分别判断l1和l2是否为null
 //            value1 = l1!=null ? l1.val : 0;
 //            value2 = l2!=null ? l2.val : 0;
-            if(l1 != null){
+            if (l1 != null) {
                 value1 = l1.val;
                 l1 = l1.next;
-            }else {
+            } else {
                 value1 = 0;
             }
 
-            if(l2 != null){
+            if (l2 != null) {
                 value2 = l2.val;
                 l2 = l2.next;
-            }else {
+            } else {
                 value2 = 0;
             }
 
             int sum = value1 + value2 + more;
 
-            if(head == null){
+            if (head == null) {
                 head = tail = new ListNode(sum % 10);
-            }else {
-                tail.next = new ListNode(sum % 10);;
+            } else {
+                tail.next = new ListNode(sum % 10);
+                ;
                 tail = tail.next;
             }
             more = sum / 10; // 算出进位值
-            if(more > 0){
+            if (more > 0) {
                 tail.next = new ListNode(more);
             }
         }
@@ -103,35 +102,35 @@ public class DayOne {
         return head;
     }
 
-    public static ListNode addTwoNumbers2(ListNode l1, ListNode l2){
-        ListNode head = null, tail =null;
-        int v1 = 0, v2=0;
+    public static ListNode addTwoNumbers2(ListNode l1, ListNode l2) {
+        ListNode head = null, tail = null;
+        int v1 = 0, v2 = 0;
         int more = 0;
-        while(l1 != null || l2 != null){
-            if(l1 != null){
+        while (l1 != null || l2 != null) {
+            if (l1 != null) {
                 v1 = l1.val;
                 l1 = l1.next;
-            }else {
+            } else {
                 v1 = 0;
             }
 
-            if(l2 != null){
+            if (l2 != null) {
                 v2 = l2.val;
                 l2 = l2.next;
-            }else {
+            } else {
                 v2 = 0;
             }
             // 计算当前位上的数
             int sum = v1 + v2 + more;
-            if(head == null){
-                head = tail = new ListNode(sum%10);
-            }else {
-                tail = new ListNode(sum%10);
+            if (head == null) {
+                head = tail = new ListNode(sum % 10);
+            } else {
+                tail = new ListNode(sum % 10);
                 tail = tail.next;
             }
             more = sum / 10; // 向前的进位
 
-            if(more > 0){
+            if (more > 0) {
                 tail.next = new ListNode(more);
             }
 
@@ -146,6 +145,7 @@ public class DayOne {
      * 由于节点没有引用其前一个节点，因此必须事先存储其前一个节点(prev)。
      * 在更改引用之前，还需要存储后一个节点
      * 最后返回新的头引用。
+     *
      * @param head
      * @return
      */
@@ -157,7 +157,7 @@ public class DayOne {
         // 然后遍历curr指针，每次遍历后将curr.next指向prev， 然后 prev 和 cur 前进一位。
         // 遍历完成后，prev指向的就是原来链表的末尾
         // https://pic.leetcode-cn.com/7d8712af4fbb870537607b1dd95d66c248eb178db4319919c32d9304ee85b602-%E8%BF%AD%E4%BB%A3.gif
-        while(curr != null){
+        while (curr != null) {
             ListNode next = curr.next;
             curr.next = prev;
             prev = curr;
@@ -170,7 +170,7 @@ public class DayOne {
     public static ListNode reverseList2(ListNode head) {
         ListNode ans = null;
 
-        while(head != null){
+        while (head != null) {
             ans = new ListNode(head.val, ans);
             head = head.next;
         }
@@ -179,13 +179,14 @@ public class DayOne {
 
     /**
      * 递归调用
+     *
      * @param head
      * @return
      */
     public static ListNode reverseList3(ListNode head) {
 
         // 递归终止条件
-        if(head == null || head.next == null){
+        if (head == null || head.next == null) {
             return head;
         }
         ListNode curr = reverseList3(head.next);  // 当递归到链表的末尾时，返回末尾的节点 此后遍历该值也不会改变
@@ -205,38 +206,40 @@ public class DayOne {
      * 如果第一次爬2个台阶，则剩下n-2个台阶，相当于求n-2个台阶的爬法数
      * 那么n个台阶的爬法就是n-1个台阶与n-2个台阶的爬法总和
      * 相当于f(n) = f(n-1) + f(n-2) 即斐波那契数列
+     *
      * @param n
      * @return
      */
     public static int climbStairs(int n) {
         // 递归
         // 如果单纯的使用递归会 时间超限 因此需要对算法进行优化
-        if(n == 1) return 1;
-        if(n == 2) return 2;
-        return climbStairs(n-1) + climbStairs(n-2);
+        if (n == 1) return 1;
+        if (n == 2) return 2;
+        return climbStairs(n - 1) + climbStairs(n - 2);
     }
 
 
     private HashMap<Integer, Integer> map = new HashMap<>();
+
     public int climbStairs1(int n) {
         // 递归
         // 如果单纯的使用递归会 时间超限 因此需要对算法进行优化
         // 使用hashMap 将已经计算过的f(n)以 n,f(n)的形式保存到map中
         // 计算之前先判断是否已经计算过该数，如果已经计算过则直接取出即可，否则正常递归计算，并将计算的结果保存到map
-        if(n == 1) return 1;
-        if(n == 2) return 2;
-        if(this.map.get(n) != null){
+        if (n == 1) return 1;
+        if (n == 2) return 2;
+        if (this.map.get(n) != null) {
             return map.get(n);
-        }else {
-            map.put(n, climbStairs1(n-1) + climbStairs1(n-2));
-            return climbStairs1(n-1) + climbStairs1(n-2);
+        } else {
+            map.put(n, climbStairs1(n - 1) + climbStairs1(n - 2));
+            return climbStairs1(n - 1) + climbStairs1(n - 2);
         }
     }
 
     public static int climbStairs2(int n) {
         // 循环计算
-        if(n == 1) return 1;
-        if(n == 2) return 2;
+        if (n == 1) return 1;
+        if (n == 2) return 2;
         int pre1 = 1;
         int pre2 = 2;
 
@@ -251,11 +254,6 @@ public class DayOne {
         return sum;
 
     }
-
-
-
-
-
 
 
 }

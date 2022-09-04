@@ -14,9 +14,9 @@ public class DayFive {
 //        int[] nums = new int[]{1, 7, 3, 6, 5, 6};
 //        pivotIndex(nums);
 
-        String s ="abcdefg";
+        String s = "abcdefg";
 //        System.out.println(s.substring(0, 1));
-        reverseStr(s,  3);
+        reverseStr(s, 3);
     }
 
     public static int minStartValue(int[] nums) {
@@ -528,6 +528,7 @@ public class DayFive {
      * 如果剩余字符小于 2k 但大于或等于 k 个，则反转前 k 个字符，其余字符保持原样。
      * 输入：s = "abcdefgh", k = 2
      * 输出："bacdfegh"  1  5
+     *
      * @param s
      * @param k
      * @return
@@ -536,19 +537,19 @@ public class DayFive {
         StringBuilder stringBuilder = new StringBuilder();
         int end, mid, count = 1;
         int j = 2 * k / 2 - 1, i = 0;  //1
-        while(i < s.length()) {
+        while (i < s.length()) {
 
             StringBuilder temp = new StringBuilder();
-            if(s.length() - i < 2 * k){
-                if(s.length() - i >= 0 && s.length() - i < k){
+            if (s.length() - i < 2 * k) {
+                if (s.length() - i >= 0 && s.length() - i < k) {
                     String substring = s.substring(i, s.length());
                     stringBuilder.append(temp.append(substring).reverse());
-                }else if (s.length() - i >= k && s.length() - i < 2 * k){
+                } else if (s.length() - i >= k && s.length() - i < 2 * k) {
                     String substring = s.substring(i, j + 1);
                     stringBuilder.append(temp.append(substring).reverse());
                     stringBuilder.append(s, j + 1, s.length());
                 }
-            }else {
+            } else {
                 String substring = s.substring(i, j + 1);
                 stringBuilder.append(temp.append(substring).reverse());
                 stringBuilder.append(s, j + 1, j + k + 1);
