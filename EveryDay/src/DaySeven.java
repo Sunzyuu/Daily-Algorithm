@@ -393,8 +393,6 @@ public class DaySeven {
             path.removeLast();
         }
     }
-
-
     private static void combineHelper3(int n, int k, int startIndex, List<List<Integer>> result, LinkedList<Integer> path) {
         if (n < 0) return; // 优化，当n < 0 时，说明后面不可能有正确的组合提前返回即可
         if (path.size() == k && n == 0) {

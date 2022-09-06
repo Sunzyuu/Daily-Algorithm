@@ -125,8 +125,35 @@ public class tree {
     }
 
 
+    /**
+     * 111. 二叉树的最小深度
+     * 给定一个二叉树，找出其最小深度。
+     * 最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+     * 说明：叶子节点是指没有子节点的节点。
+     * @param root
+     * @return
+     */
+    public static int minDepth(TreeNode root) {
+        if(root == null) return 0;
 
+        return getMinDepth(root);
+        // 使用后序遍历 左右中
+    }
 
+    private static int getMinDepth(TreeNode root) {
+        if(root == null) return 0;
+        int leftHight = getMinDepth(root.left);
+        int rightHight = getMinDepth(root.right);
+        // 后序遍历到中间节点的处理流程
+        // 此时取最小值应该注意左或右节点为null的特殊情况
+        if(root.left == null && root.right != null) {
+            return 1 + rightHight;
+        }
+        if(root.left != null && root.right == null) {
+            return 1 + leftHight;
+        }
+        return 1 + Math.min(rightHight, leftHight);
+    }
 
 
     public static void main(String[] args) {

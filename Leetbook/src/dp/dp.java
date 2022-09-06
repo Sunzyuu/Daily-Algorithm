@@ -122,6 +122,122 @@ public class dp {
         return dp[n];
     }
 
+    /**
+     * 96. 不同的二叉搜索树
+     * 给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数。
+     * @param n
+     * @return
+     */
+    public static int numTrees(int n) {
+
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[j - 1] * dp[i - j];
+            }
+        }
+        return dp[n];
+    }
+
+
+    /**
+     * 01背包问题
+     * @param weight
+     * @param value
+     * @param bagSize
+     * @return
+     */
+    public static int bag(int[] weight, int[] value, int bagSize){
+        int[][] dp = new int[weight.length][bagSize + 1]; // dp[i][j] 表示在j容量的情况下i个物品时获取的最大价值
+        // dp数组初始化  初始化时只有物品0，当背包容量>=weight[0]才需要填入value[0]
+        for (int i = weight[0]; i < weight.length; i++) {
+            dp[0][i] = value[0];
+        }
+        // 先遍历物品再遍历背包容量
+        for (int i = 1; i < weight.length; i++) {
+            for (int j = 0; j <= bagSize; j++) {
+                if(j < weight[i]) dp[i][j] = dp[i -1][j];
+                else
+                    dp[i][j] = Math.max(dp[i- 1][j], dp[i - 1][j - weight[i]] + value[i]);
+              }
+        }
+        for (int[] ints : dp) {
+            System.out.println(Arrays.toString(ints));
+        }
+        return dp[weight.length - 1][bagSize];
+    }
+
+
+    public static int bag1(int[] weight, int[] value, int bagSize){
+        int[] dp = new int[bagSize + 1];
+        dp[0] = 0;
+
+        for (int i = 0; i < weight.length; i++) {
+            for (int j = bagSize; j >= weight[i]; j--) {
+                dp[j] = Math.max(dp[j], dp[j - weight[i]] + value[i]);
+            }
+        }
+        System.out.println(Arrays.toString(dp));
+        return dp[bagSize];
+    }
+
+
+    /**
+     * 416. 分割等和子集
+     * 给你一个 只包含正整数 的 非空 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+     * @param nums
+     * @return
+     */
+    public static boolean canPartition(int[] nums) {
+        int sum = Arrays.stream(nums).sum();
+        if(sum % 2 == 1)return false;
+        int target = sum / 2;
+        int[] dp = new int[target + 1];
+        for(int i = 0; i < nums.length; i++){
+            for(int j = target; j >= nums[i]; j--){
+                dp[j] = Math.max(dp[j], dp[j - nums[i]] + nums[i]);
+            }
+        }
+        return dp[target] == target;
+    }
+
+    /**
+     * 1049. 最后一块石头的重量 II
+     * 有一堆石头，用整数数组 stones 表示。其中 stones[i] 表示第 i 块石头的重量。
+     * 每一回合，从中选出任意两块石头，然后将它们一起粉碎。假设石头的重量分别为 x 和 y，且 x <= y。那么粉碎的可能结果如下：
+     * 如果 x == y，那么两块石头都会被完全粉碎；
+     * 如果 x != y，那么重量为 x 的石头将会完全粉碎，而重量为 y 的石头新重量为 y-x。
+     * 最后，最多只会剩下一块 石头。返回此石头 最小的可能重量 。如果没有石头剩下，就返回 0。
+     * 1 <= stones.length <= 30
+     * 1 <= stones[i] <= 100
+     * @param stones
+     * @return
+     */
+    public static int lastStoneWeightII(int[] stones) {
+        /// 首先分析得出将这堆石头分成质量最接近的两堆后，最后粉碎剩下的质量是最小的
+        // 转化成01背包问题 dp[i]表示i容量的背包能放下的最大价值 此题的重量为stones[i] 价值也为stones[i]
+        // 1 <= stones.length <= 30
+        // 1 <= stones[i] <= 100
+        // 背包的最大容量为30 * 100 = 30000此处分一半就行 15000；
+        int sum = Arrays.stream(stones).sum();
+        int target = sum >> 1;
+        int[] dp = new int[15005];
+        for (int i = 0; i < stones.length; i++) {
+            for (int j = target; j >= stones[i]; j--) {
+                dp[j] = Math.max(dp[j], dp[j - stones[i]] + stones[i]);
+            }
+        }
+
+        return (sum - target) - dp[target];
+
+    }
+
     public static void main(String[] args) {
+        int[] weight = {1, 3, 4};
+        int[] value = {15, 20, 30};
+        int bagsize = 4;
+        System.out.println(bag(weight, value, bagsize));
+        System.out.println(bag1(weight, value, bagsize));
     }
 }
