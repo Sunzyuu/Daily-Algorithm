@@ -286,6 +286,7 @@ public class dp {
      * 给你一个二进制字符串数组 strs 和两个整数 m 和 n 。
      * 请你找出并返回 strs 的最大子集的长度，该子集中 最多 有 m 个 0 和 n 个 1 。
      * 如果 x 的所有元素也是 y 的元素，集合 x 是集合 y 的 子集 。
+     *
      * @param strs
      * @param m
      * @param n
@@ -301,15 +302,15 @@ public class dp {
         for (String str : strs) {
             int zeroNumber = 0, oneNumber = 0;
             for (int i = 0; i < str.length(); i++) {
-                if(str.charAt(i) == '0'){
+                if (str.charAt(i) == '0') {
                     zeroNumber++;
-                }else {
+                } else {
                     oneNumber++;
                 }
             }
-            for (int i = m; i >=0; i--) {
+            for (int i = m; i >= 0; i--) {
                 for (int j = n; j >= 0; j--) {
-                    dp[i][j] = Math.max(dp[i][j], dp[i -zeroNumber][j - oneNumber]);
+                    dp[i][j] = Math.max(dp[i][j], dp[i - zeroNumber][j - oneNumber]);
                 }
             }
         }
@@ -322,6 +323,7 @@ public class dp {
      * 请你计算并返回可以凑成总金额的硬币组合数。如果任何硬币组合都无法凑出总金额，返回 0 。
      * 假设每一种面额的硬币有无限个。
      * 题目数据保证结果符合 32 位带符号整数。
+     *
      * @param amount
      * @param coins
      * @return
@@ -331,12 +333,83 @@ public class dp {
         dp[0] = 1;
         for (int i = 0; i < coins.length; i++) {
             for (int j = 0; j <= amount; j++) {
-                if(j >= coins[i])
+                if (j >= coins[i])
                     dp[j] += dp[j - coins[i]];
             }
         }
         return dp[amount];
     }
+
+    /**
+     * 377. 组合总和 Ⅳ
+     * 给你一个由 不同 整数组成的数组 nums ，和一个目标整数 target 。请你从 nums 中找出并返回总和为 target 的元素组合的个数。
+     * 题目数据保证答案符合 32 位整数范围。
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target + 1]; // dp[i] 表示凑成目标正整数为i的排列个数为dp[i]
+        dp[0] = 1;
+        for (int i = 0; i <= target; i++) {
+            for (int j = 0; j < nums.length; j++) {
+                if (nums[j] <= i) {
+                    dp[i] += dp[i - nums[j]];
+                }
+            }
+        }
+        return dp[target];
+    }
+
+    /**
+     * 322. 零钱兑换
+     * 给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。
+     * 计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。
+     * 你可以认为每种硬币的数量是无限的。
+     *
+     * @param coins
+     * @param amount
+     * @return
+     */
+    public int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1]; // dp[i]表示凑成i元所用的最少硬币数
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        for (int i = 0; i < coins.length; i++) {
+            for (int j = coins[i]; j <= amount; j++) {
+                if (dp[j - coins[i]] != Integer.MAX_VALUE) {
+                    dp[j] = Math.min(dp[j], dp[j - coins[i]] + 1);
+                }
+            }
+        }
+        return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
+    }
+
+    /**
+     * 279. 完全平方数
+     * 给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
+     * 完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。
+     *
+     * @param n
+     * @return
+     */
+    public int numSquares(int n) {
+        int[] dp = new int[n + 1];
+        // Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+
+        for (int i = 1; i <= n; ++i) {
+            // 位置i只依赖 i-j*j 的位置，如 i-1、i-4、i-9 等等位置，才能满足完全平方分割的条件。
+            // 因此dp[i]可以取的最小值即为 1 + min(dp[i-1],dp[i-4],dp[i-9]...)
+            dp[i] = i;  // 最坏的情况: 所有被加起来的完全平方数都是1
+            for (int j = 1; i - j * j >= 0; ++j) {
+                dp[i] = Math.min(dp[i], dp[i - j * j] + 1);  // dp[i] 表示数字i最少可以由几个完全平方数相加构成
+            }
+        }
+        return dp[n];
+    }
+
 
     public static void main(String[] args) {
         int[] weight = {1, 3, 4};
