@@ -1,6 +1,7 @@
 package dp;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 动态规划汇总
@@ -408,6 +409,72 @@ public class dp {
             }
         }
         return dp[n];
+    }
+
+    /**
+     * 139. 单词拆分
+     * 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
+     * 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        boolean[] dp = new boolean[s.length() + 1]; // dp[i]=1 表示长度为i的字符串s可以拆分成字典中的单词
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) { // 从1开始是因为substring()是左闭右开区间
+            for (int j = 0; j < i; j++) { //
+                if(wordDict.contains(s.substring(j, i)) && dp[j]){  // dp[j] == true且s[j,i]出现在字典中那么dp[i]==true
+                    dp[i] = true;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+
+
+    /**
+     * 198. 打家劫舍
+     * 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
+     * 给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
+     * @param nums
+     * @return
+     */
+    public static int rob(int[] nums) {
+        if(nums.length ==  1) return nums[0];
+        int[] dp = new int[nums.length + 1];
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0],nums[1]);
+
+        for (int i = 2; i < nums.length; i++) {
+            dp[i] += Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+        }
+        return dp[nums.length - 1];
+    }
+
+
+    /**
+     * 213. 打家劫舍 II
+     * 你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都 围成一圈 ，这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警 。
+     * 给定一个代表每个房屋存放金额的非负整数数组，计算你 在不触动警报装置的情况下 ，今晚能够偷窃到的最高金额。
+     * @param nums
+     * @return
+     */
+    public static int rob2(int[] nums) {
+
+        if(nums.length ==  1) return nums[0];
+
+        return Math.max(robRange(nums, 0, nums.length - 2), robRange(nums, 1, nums.length-1));
+    }
+    public static int robRange(int[] nums, int start, int end) {
+        if (end == start) return nums[start];
+        int[] dp = new int[nums.length];
+        dp[start] = nums[start];
+        dp[start + 1] = Math.max(nums[start],nums[start + 1]);
+        for (int i = start + 2; i <= end; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+        }
+        return dp[end];
     }
 
 
