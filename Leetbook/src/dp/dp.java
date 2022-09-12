@@ -478,6 +478,57 @@ public class dp {
     }
 
 
+    /**
+     * 309. 最佳买卖股票时机含冷冻期
+     * 给定一个整数数组prices，其中第  prices[i] 表示第 i 天的股票价格 。
+     * 设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
+     * 卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。
+     * 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int[] prices) {
+        int[][] dp = new int[prices.length][2];
+        // dp[i][0] 表示第i天持有股票获得的能最大价值
+        // dp[i][1]表示第i天没有持有股票能获得的最大价值
+        // 当持有股票时 有两种情况：    第i-1天已经持有股票 那么第i天的状态就是dp[i-1][0]
+        //                         在第i天买入股票 那么获得的最大价值就是-price[i]  因此dp[i][0] = Math.max(dp[i-1][0], -prices[i]);
+        // 当没有持有股票时也有两种情况：第i-1天也没有持有股票 那么第i天的状态就是dp[i-1][1]
+        //                         在第i天卖出股票,说明i-1天已经买入股票，那么当天能够获得最大价值就是dp[i-1][0] + pricesp[i]
+        //                          dp[i][1] = Math.max(dp[i-1][1], prices[i] + dp[i-1][0]);
+        dp[0][0] -= prices[0];
+        dp[0][1] = 0;
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i-1][0], -prices[i]);
+            dp[i][1] = Math.max(dp[i-1][1], prices[i] + dp[i-1][0]);
+        }
+        return dp[prices.length-1][1];
+    }
+
+    /**
+     * 300. 最长递增子序列
+     * 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
+     * 子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
+     * @param nums
+     * @return
+     */
+    public int lengthOfLIS(int[] nums) {
+        int[] dp = new int[nums.length];
+        if(nums.length == 1) return 1;
+        Arrays.fill(dp, 1);
+        int res=0;
+        for(int i=1;i<nums.length; i++){
+            for(int j = 0; j < i; j++){
+                if(nums[i] > nums[j])
+                    dp[i]= Math.max(dp[i], dp[j] + 1);
+            }
+            if (dp[i] > res) res = dp[i];
+        }
+        return res;
+    }
+
+
+
     public static void main(String[] args) {
         int[] weight = {1, 3, 4};
         int[] value = {15, 20, 30};
