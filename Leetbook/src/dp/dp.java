@@ -1,5 +1,7 @@
 package dp;
 
+import tree.TreeNode;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -415,6 +417,7 @@ public class dp {
      * 139. 单词拆分
      * 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
      * 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+     *
      * @param s
      * @param wordDict
      * @return
@@ -424,7 +427,7 @@ public class dp {
         dp[0] = true;
         for (int i = 1; i <= s.length(); i++) { // 从1开始是因为substring()是左闭右开区间
             for (int j = 0; j < i; j++) { //
-                if(wordDict.contains(s.substring(j, i)) && dp[j]){  // dp[j] == true且s[j,i]出现在字典中那么dp[i]==true
+                if (wordDict.contains(s.substring(j, i)) && dp[j]) {  // dp[j] == true且s[j,i]出现在字典中那么dp[i]==true
                     dp[i] = true;
                 }
             }
@@ -437,14 +440,15 @@ public class dp {
      * 198. 打家劫舍
      * 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
      * 给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
+     *
      * @param nums
      * @return
      */
     public static int rob(int[] nums) {
-        if(nums.length ==  1) return nums[0];
+        if (nums.length == 1) return nums[0];
         int[] dp = new int[nums.length + 1];
         dp[0] = nums[0];
-        dp[1] = Math.max(nums[0],nums[1]);
+        dp[1] = Math.max(nums[0], nums[1]);
 
         for (int i = 2; i < nums.length; i++) {
             dp[i] += Math.max(dp[i - 1], dp[i - 2] + nums[i]);
@@ -457,26 +461,57 @@ public class dp {
      * 213. 打家劫舍 II
      * 你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都 围成一圈 ，这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警 。
      * 给定一个代表每个房屋存放金额的非负整数数组，计算你 在不触动警报装置的情况下 ，今晚能够偷窃到的最高金额。
+     *
      * @param nums
      * @return
      */
     public static int rob2(int[] nums) {
 
-        if(nums.length ==  1) return nums[0];
+        if (nums.length == 1) return nums[0];
 
-        return Math.max(robRange(nums, 0, nums.length - 2), robRange(nums, 1, nums.length-1));
+        return Math.max(robRange(nums, 0, nums.length - 2), robRange(nums, 1, nums.length - 1));
     }
+
     public static int robRange(int[] nums, int start, int end) {
         if (end == start) return nums[start];
         int[] dp = new int[nums.length];
         dp[start] = nums[start];
-        dp[start + 1] = Math.max(nums[start],nums[start + 1]);
+        dp[start + 1] = Math.max(nums[start], nums[start + 1]);
         for (int i = start + 2; i <= end; i++) {
             dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
         }
         return dp[end];
     }
 
+    /**
+     * 337. 打家劫舍 III
+     * 小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。
+     * 除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。
+     * 给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额 。
+     *
+     * @param root
+     * @return
+     */
+    public static int rob3(TreeNode root) {
+        int[] res = robActions(root);
+        return Math.max(res[0], res[1]);
+    }
+
+    // 树形dp
+    private static int[] robActions(TreeNode root) {
+        int[] res = new int[2];  // res[0]表示不抢劫该节点的能获取的最大值
+        // res[1]表示抢劫该节点的能获取的最大值
+        if (root == null) return res;
+        //首先进行后续遍历然后再对根节点进行相应的逻辑处理
+        int[] left = robActions(root.left);
+        int[] right = robActions(root.right);
+        // 对根节点有两种选择
+        // 1.选择抢劫该节点，那么左右儿子都不能抢劫 res[1] = root.val + left[0] + right[0]
+        // 2.不抢劫该节点，那么选择左右儿子中抢和不抢的最大值 res[0] = max(left[0], left[1]) + max(right[0], right[1])
+        res[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        res[1] = root.val + left[0] + right[0];
+        return res;
+    }
 
     /**
      * 309. 最佳买卖股票时机含冷冻期
@@ -484,6 +519,7 @@ public class dp {
      * 设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
      * 卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。
      * 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+     *
      * @param prices
      * @return
      */
@@ -499,34 +535,80 @@ public class dp {
         dp[0][0] -= prices[0];
         dp[0][1] = 0;
         for (int i = 1; i < prices.length; i++) {
-            dp[i][0] = Math.max(dp[i-1][0], -prices[i]);
-            dp[i][1] = Math.max(dp[i-1][1], prices[i] + dp[i-1][0]);
+            dp[i][0] = Math.max(dp[i - 1][0], -prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], prices[i] + dp[i - 1][0]);
         }
-        return dp[prices.length-1][1];
+        return dp[prices.length - 1][1];
     }
 
     /**
      * 300. 最长递增子序列
      * 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
      * 子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
+     *
      * @param nums
      * @return
      */
     public int lengthOfLIS(int[] nums) {
         int[] dp = new int[nums.length];
-        if(nums.length == 1) return 1;
+        if (nums.length == 1) return 1;
         Arrays.fill(dp, 1);
-        int res=0;
-        for(int i=1;i<nums.length; i++){
-            for(int j = 0; j < i; j++){
-                if(nums[i] > nums[j])
-                    dp[i]= Math.max(dp[i], dp[j] + 1);
+        int res = 0;
+        for (int i = 1; i < nums.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j])
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
             }
             if (dp[i] > res) res = dp[i];
         }
         return res;
     }
 
+    /**
+     * 674. 最长连续递增序列
+     * 给定一个未经排序的整数数组，找到最长且连续递增的子序列，并返回该序列的长度。
+     * 连续递增的子序列 可以由两个下标 l 和 r（l < r）确定，如果对于每个 l <= i < r，都有 nums[i] < nums[i + 1] ，那么子序列 [nums[l], nums[l + 1], ..., nums[r - 1], nums[r]] 就是连续递增子序列。
+     *
+     * @param nums
+     * @return
+     */
+    public static int findLengthOfLCIS(int[] nums) {
+        int[] dp = new int[nums.length];
+        Arrays.fill(dp, 1);
+        int res = 1;
+
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] > nums[i - 1]) {
+                dp[i] = Math.max(dp[i], dp[i - 1] + 1);
+            }
+
+            if (res < dp[i]) res = dp[i];
+        }
+        return res;
+    }
+
+    /**
+     * 718. 最长重复子数组
+     * 给两个整数数组 nums1 和 nums2 ，返回 两个数组中 公共的 、长度最长的子数组的长度 。
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int findLength(int[] nums1, int[] nums2) {
+        int[][] dp = new int[nums1.length + 1][nums2.length + 1];
+
+        int res = 0;
+        for (int i = 1; i <= nums1.length; i++) {
+            for (int j = 1; j <= nums2.length; j++) {
+                if(nums1[i-1] == nums2[j - 1]){
+                    dp[i][j] = dp[i-1][j-1]+1;
+                }
+
+                if(res < dp[i][j]) res = dp[i][j];
+            }
+        }
+        return res;
+    }
 
 
     public static void main(String[] args) {
