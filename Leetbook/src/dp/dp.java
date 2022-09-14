@@ -590,6 +590,7 @@ public class dp {
     /**
      * 718. 最长重复子数组
      * 给两个整数数组 nums1 和 nums2 ，返回 两个数组中 公共的 、长度最长的子数组的长度 。
+     *
      * @param nums1
      * @param nums2
      * @return
@@ -601,11 +602,11 @@ public class dp {
         int res = 0;
         for (int i = 1; i <= nums1.length; i++) {
             for (int j = 1; j <= nums2.length; j++) {
-                if(nums1[i-1] == nums2[j - 1]){
-                    dp[i][j] = dp[i-1][j-1]+1;
+                if (nums1[i - 1] == nums2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
                 }
 
-                if(res < dp[i][j]) res = dp[i][j];
+                if (res < dp[i][j]) res = dp[i][j];
             }
         }
         return res;
@@ -616,13 +617,13 @@ public class dp {
         int res = 0;
         for (int i = 1; i <= nums1.length; i++) {
             for (int j = nums2.length; j > 0; j--) {
-                if(nums1[i-1] == nums2[j - 1]){
-                    dp[j] = dp[j -1] + 1;
-                }else{
+                if (nums1[i - 1] == nums2[j - 1]) {
+                    dp[j] = dp[j - 1] + 1;
+                } else {
                     dp[j] = 0;
                 }
 
-                if(res < dp[j]) res = dp[j];
+                if (res < dp[j]) res = dp[j];
             }
         }
         return res;
@@ -634,6 +635,7 @@ public class dp {
      * 一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
      * 例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。
      * 两个字符串的 公共子序列 是这两个字符串所共同拥有的子序列。
+     *
      * @param text1
      * @param text2
      * @return
@@ -641,20 +643,165 @@ public class dp {
     public int longestCommonSubsequence(String text1, String text2) {
         int[][] dp = new int[text1.length() + 1][text2.length() + 1];
 
-        for (int i = 1; i <= text1.length() ; i++) {
+        for (int i = 1; i <= text1.length(); i++) {
             for (int j = 1; j <= text2.length(); j++) {
-                if(text1.charAt(i-1) == text2.charAt(j-1)){
-                    dp[i][j] = dp[i-1][j-1] + 1;
-                }else {
-                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
                 }
             }
         }
 
-        return dp[text1.length()- 1][text2.length() -1];
+        return dp[text1.length() - 1][text2.length() - 1];
+    }
+
+    /**
+     * 1035. 不相交的线
+     * 在两条独立的水平线上按给定的顺序写下 nums1 和 nums2 中的整数。
+     * 现在，可以绘制一些连接两个数字 nums1[i] 和 nums2[j] 的直线，这些直线需要同时满足满足：
+     *  nums1[i] == nums2[j]
+     * 且绘制的直线不与任何其他连线（非水平线）相交。
+     * 请注意，连线即使在端点也不能相交：每个数字只能属于一条连线。
+     * 以这种方法绘制线条，并返回可以绘制的最大连线数。
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int maxUncrossedLines(int[] nums1, int[] nums2) {
+        /**
+         * 1,4,2
+         * 1,2,4
+         *可以画出两条不交叉的线
+         * 但无法画出第三条不相交的直线，因为从 nums1[1]=4 到 nums2[2]=4 的直线将与从 nums1[2]=2 到 nums2[1]=2 的直线相交。
+         * 什么情况下连线才不会出现相交的线呢？？
+         * 从上面的例子可以看出1,4是两个数组的最长公共子序列
+         * 同理1,2也是，当连1和2时两条线也时不相交的，所以这里就是求两个数组的最长公共子序列
+         */
+        int[][] dp = new int[nums1.length + 1][nums2.length + 1];
+
+
+        for (int i = 1; i <= nums1.length; i++) {
+            for (int j = 1; j <= nums2.length; j++) {
+                if (nums1[i - 1] == nums2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+
+        }
+        return dp[nums1.length][nums2.length];
+    }
+
+    /**
+     * 53. 最大子数组和
+     * 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+     * 子数组 是数组中的一个连续部分。
+     *
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        int[] sum = new int[nums.length];
+        sum[0] = nums[0];
+        int res = nums[0];
+
+        for (int i = 1; i < nums.length; i++) {
+            sum[i] = Math.max(nums[i], sum[i - 1] + nums[i]);
+
+            if (sum[i] > res) {
+                res = sum[i];
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 392. 判断子序列
+     * 给定字符串 s 和 t ，判断 s 是否为 t 的子序列。
+     * 字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。（例如，"ace"是"abcde"的一个子序列，而"aec"不是）。
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isSubsequence(String s, String t) {
+        /**
+         * 双指针
+         */
+        int p1 = 0, p2 = 0;
+        int len1 = s.length();
+        int len2 = t.length();
+        // len1 <= len2
+        while (p1 < len1 && p2 < len2) {
+            if (s.charAt(p1) == t.charAt(p2)) {
+                p1++;
+                p2++;
+            } else {
+                p2++;
+            }
+        }
+        return p1 == len1;
     }
 
 
+    public boolean isSubsequence2(String s, String t) {
+        /**
+         * dp
+         */
+        int len1 = s.length();
+        int len2 = t.length();
+        int[][] dp = new int[len1 + 1][len2 + 1];
+        // dp[i][j] 表示以下标i-1为结尾的字符串s，和以下标j-1为结尾的字符串t，相同子序列的长度为dp[i][j]
+        // 当s.charAt(i - 1) == t.charAt(j-1)相同时，t中找到了一个字符在s中也出现了
+        // dp[i][j] = dp[i - 1][j - 1] + 1
+        //if (s[i - 1] != t[j - 1])，此时相当于t要删除元素，t如果把当前元素t[j - 1]删除，
+        // 那么dp[i][j] 的数值就是 看s[i - 1]与 t[j - 2]的比较结果了，
+        // 即：dp[i][j] = dp[i][j - 1];
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                if (s.charAt(i - 1) == t.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = dp[i][j - 1];
+                }
+            }
+        }
+        return dp[len1][len2] == len1;
+    }
+
+    /**
+     * 115. 不同的子序列
+     * 给定一个字符串 s 和一个字符串 t ，计算在 s 的子序列中 t 出现的个数。
+     * 字符串的一个 子序列 是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如，"ACE" 是 "ABCDE" 的一个子序列，而 "AEC" 不是）
+     * 题目数据保证答案符合 32 位带符号整数范围。
+     * @param s
+     * @param t
+     * @return
+     */
+    public int numDistinct(String s, String t) {
+        /**
+         * dp[i][j]表示以i-1长s和j-1长的t 中s的子序列中t出现的次数
+         */
+        int[][] dp = new int[t.length() + 1][s.length() + 1];
+        for (int i = 0; i < s.length(); i++) {
+            dp[0][i] = 1;
+        }
+        for (int i = 1; i <= t.length(); i++) {
+            for (int j = 1; j <= s.length(); j++) {
+                if(t.charAt(i - 1) == s.charAt(j - 1)){
+                    dp[i][j] = dp[i - 1][j - 1] + dp[i][j - 1];
+                }else {
+                    dp[i][j] = dp[i][j-1];
+                }
+            }
+        }
+        // for (int i = 0; i < dp.length; i++) {
+        //     System.out.println(Arrays.toString(dp[i]));
+        // }
+        return dp[t.length()][s.length()];
+    }
 
 
     public static void main(String[] args) {
