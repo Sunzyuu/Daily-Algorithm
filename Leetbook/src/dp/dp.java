@@ -664,6 +664,7 @@ public class dp {
      * 且绘制的直线不与任何其他连线（非水平线）相交。
      * 请注意，连线即使在端点也不能相交：每个数字只能属于一条连线。
      * 以这种方法绘制线条，并返回可以绘制的最大连线数。
+     *
      * @param nums1
      * @param nums2
      * @return
@@ -706,7 +707,6 @@ public class dp {
         int[] sum = new int[nums.length];
         sum[0] = nums[0];
         int res = nums[0];
-
         for (int i = 1; i < nums.length; i++) {
             sum[i] = Math.max(nums[i], sum[i - 1] + nums[i]);
 
@@ -776,33 +776,164 @@ public class dp {
      * 给定一个字符串 s 和一个字符串 t ，计算在 s 的子序列中 t 出现的个数。
      * 字符串的一个 子序列 是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如，"ACE" 是 "ABCDE" 的一个子序列，而 "AEC" 不是）
      * 题目数据保证答案符合 32 位带符号整数范围。
+     *
      * @param s
      * @param t
      * @return
      */
     public int numDistinct(String s, String t) {
         /**
-         * dp[i][j]表示以i-1长s和j-1长的t 中s的子序列中t出现的次数
+         * dp[i][j] 以i-1为结尾的s子序列中出现以 j-1为结尾的t的个数为dp[i][j]。
          */
-        int[][] dp = new int[t.length() + 1][s.length() + 1];
-        for (int i = 0; i < s.length(); i++) {
-            dp[0][i] = 1;
+        //dp[i][0] 表示t字符串为空时，s[i-1]的子序列中为空的个数，那么dp[i][0]一定为1
+        //dp[0][j] 表示s字符串为空时，s字符串出现子序列为t[j-1]的个数，那么dp[0][j]一定为0
+        int[][] dp = new int[s.length() + 1][t.length() + 1];
+        for (int i = 0; i < s.length() + 1; i++) {
+            dp[i][0] = 1;
         }
-        for (int i = 1; i <= t.length(); i++) {
-            for (int j = 1; j <= s.length(); j++) {
-                if(t.charAt(i - 1) == s.charAt(j - 1)){
-                    dp[i][j] = dp[i - 1][j - 1] + dp[i][j - 1];
-                }else {
-                    dp[i][j] = dp[i][j-1];
+        // 当t[i-1] == s[j-1]时，此时说明t的子序列中是包含s的，但是依然存在两种情况
+        // 相关解释https://pic.leetcode-cn.com/1615916797-rXJnAT-image.png
+        // 举例，s 为babgbag，t 为bag，末尾字符相同，于是 s 有两种选择：
+        //1.用s[s.length-1]去匹配掉t[t.length-1]，问题规模缩小：继续考察babgba和ba  跟消消乐一样，将两个字符串的规模都缩小了
+        //2.不这么做，但t[t.length-1]仍需被匹配，于是在babgba中继续挑，考察babgba和bag
+        for (int i = 1; i < s.length() + 1; i++) {
+            for (int j = 1; j < t.length() + 1; j++) {
+                if (s.charAt(i - 1) == t.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i - 1][j];
                 }
             }
         }
-        // for (int i = 0; i < dp.length; i++) {
-        //     System.out.println(Arrays.toString(dp[i]));
-        // }
-        return dp[t.length()][s.length()];
+        return dp[s.length()][t.length()];
     }
 
+    /**
+     * 583. 两个字符串的删除操作
+     * 给定两个单词 word1 和 word2 ，返回使得 word1和 word2 相同所需的最小步数。
+     * 每步 可以删除任意一个字符串中的一个字符。
+     *
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int minDistance(String word1, String word2) {
+        int[][] dp = new int[word1.length() + 1][word2.length() + 1];
+        // dp[i][j]以i-1为结尾的字符串word1，和以j-1位结尾的字符串word2，想要达到相等，所需要删除元素的最少次数。
+
+        // 初始化
+        // dp[0][j]是指 word1为空字符串，那么长j-1的word2删除到空字符串的次数自然为j
+        // dp[i][0]同上
+        for (int i = 0; i <= word1.length(); i++) {
+            dp[i][0] = i;
+        }
+        for (int i = 0; i <= word2.length(); i++) {
+            dp[0][i] = i;
+        }
+        // 当word1[i-1] == word2[j-1]此时两个单词都不用任何操作即dp[i][j] = dp[i-1][j-1]
+        // 当word1[i-1] != word2[j-1]此时有三种情况：
+        //      1.word1删除第i-1位 此时dp[i][j] = dp[i-1][j] + 1
+        //      2.word2删除第j-1位 此时dp[i][j] = dp[i][j-1] + 1
+        //      3.word1和word2同时删除，此时相当于操作了两步 dp[i][j] = dp[i-1][j-1] + 2
+        for (int i = 1; i <= word1.length(); i++) {
+            for (int j = 1; j <= word2.length(); j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1), dp[i - 1][j - 1] + 2);
+                }
+            }
+        }
+        return dp[word1.length()][word2.length()];
+    }
+
+    /**
+     * 115. 不同的子序列
+     * 给定一个字符串 s 和一个字符串 t ，计算在 s 的子序列中 t 出现的个数。
+     *
+     * 字符串的一个 子序列 是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如，"ACE" 是 "ABCDE" 的一个子序列，而 "AEC" 不是）
+     *
+     * 题目数据保证答案符合 32 位带符号整数范围。
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public static int minDistance2(String word1, String word2) {
+        //dp[i][j] 表示以下标i-1为结尾的字符串word1，和以下标j-1为结尾的字符串word2，最近编辑距离为dp[i][j]
+        int[][] dp = new int[word1.length() + 1][word2.length() + 1];
+        // 递归方程
+        // 当word1[i-1] == word2[j-1], 不需要任何操作 dp[i][j] = dp[i-1][j-1]
+        // 当word1[i-1] != word2[j-1]
+        // 此时有三种操作
+        // 1.word1删除一个字母 word1删除一个元素，那么就是以下标i - 2为结尾的word1 与 j-1为结尾的word2的最近编辑距离 再加上一个操作。即 dp[i][j] = dp[i - 1][j] + 1;
+        // 2.word1添加一个字母 word2删除一个元素，那么就是以下标i - 1为结尾的word1 与 j-2为结尾的word2的最近编辑距离 再加上一个操作。即 dp[i][j] = dp[i][j - 1] + 1;
+        // 3.word1替换一个字母 替换元素，word1替换word1[i - 1]，使其与word2[j - 1]相同，此时不用增加元素，那么以下标i-2为结尾的word1 与 j-2为结尾的word2的最近编辑距离 加上一个替换元素的操作
+        // dp[i][j] = dp[i-1][j-1] + 1
+        // 初始化
+        // dp[i][0] 与dp[0][j] 时一定要初始化的
+        // dp[i][0] 表示word2为空字符串时 word1需要编辑多少次成为空字符串，删除word1中的字母，即删除i次 dp[i][0] = i
+        // dp[0][j] 表示word1为空字符串时 word1需要编辑多少次成为word2，在word1中添加字母到长为j，即添加j次 dp[0][j] = j
+        for (int i = 0; i <= word1.length(); i++) {
+            dp[i][0] = i;
+        }
+        for (int i = 0; i <= word2.length(); i++) {
+            dp[0][i] = i;
+        }
+        // 递归顺序
+        for (int i = 1; i <= word1.length(); i++) {
+            for (int j = 1; j <= word2.length(); j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+                }
+            }
+        }
+        return dp[word1.length()][word2.length()];
+    }
+
+    /**
+     * 647. 回文子串
+     * 给你一个字符串 s ，请你统计并返回这个字符串中 回文子串 的数目。
+     * 回文字符串 是正着读和倒过来读一样的字符串。
+     * 子字符串 是字符串中的由连续字符组成的一个序列。
+     * 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+     *
+     * @param s
+     * @return
+     */
+    public int countSubstrings(String s) {
+        int[][] dp = new int[s.length()][s.length()];
+        // dp[i][j]表示s[i:j]是否回文串
+
+        // 递推方程
+        // s[i] != s[j]时,dp[i][j] = 0
+        // 当 s[i] == s[j]时，有三种情况
+        // 当i==j 时dp[i][j] = 1
+        // 当i - j == 1 时 dp[i][j] = 1
+        // i - j > 1时，此时需要看dp[i+1][j-1]的情况
+        // 如果dp[i + 1][j-1] == 1 那么dp[i][j] = 1
+        // 如果dp[i + 1][j-1] == 0 那么dp[i][j] = 0
+
+        // 遍历顺序
+        // 由递推公式可以看出i应该有从后向前推 j是从前向后推
+        int res = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            for (int j = i; j < s.length(); j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    if (j - i <= 1) {
+                        res++;
+                        dp[i][j] = 1;
+                    } else if (dp[i + 1][j - 1] == 1) {
+                        res++;
+                        dp[i][j] = 1;
+                    }
+                }
+            }
+        }
+
+        return res;
+    }
 
     public static void main(String[] args) {
         int[] weight = {1, 3, 4};
