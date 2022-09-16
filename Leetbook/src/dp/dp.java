@@ -850,10 +850,11 @@ public class dp {
     /**
      * 115. 不同的子序列
      * 给定一个字符串 s 和一个字符串 t ，计算在 s 的子序列中 t 出现的个数。
-     *
+     * <p>
      * 字符串的一个 子序列 是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如，"ACE" 是 "ABCDE" 的一个子序列，而 "AEC" 不是）
-     *
+     * <p>
      * 题目数据保证答案符合 32 位带符号整数范围。
+     *
      * @param word1
      * @param word2
      * @return
@@ -931,11 +932,78 @@ public class dp {
                 }
             }
         }
+        return res;
+    }
 
+    /**
+     * 双指针方法
+     * 中心扩散
+     * @param s
+     * @return
+     */
+    public static int countSubstrings2(String s) {
+        // 以某个点为中心，向两边移动，
+        // 这里可以点可以是一个字母也可以是两个字母
+        // 当为三个字母时，可以为一个字母向两边扩散一位得到，四个字母时由两个字母向两边扩散一位得到
+        //
+        int res = 0;
+        for (int i = 0; i < s.length(); i++) {
+            res += extend(s, i, i, s.length());
+            res += extend(s, i, i + 1, s.length());
+        }
+        return res;
+    }
+
+    private static int extend(String s, int i, int j, int len) {
+        int res = 0;
+        while (i >= 0 && j < len && s.charAt(i) == s.charAt(j)) {
+            i--;
+            j++;
+            res++;
+        }
         return res;
     }
 
 
+    /**
+     * 516. 最长回文子序列
+     * 给你一个字符串 s ，找出其中最长的回文子序列，并返回该序列的长度。
+     * 子序列定义为：不改变剩余字符顺序的情况下，删除某些字符或者不删除任何字符形成的一个序列。
+     *
+     * @param s
+     * @return
+     */
+    public int longestPalindromeSubseq(String s) {
+        int[][] dp = new int[s.length()][s.length()];
+        // dp[i][j]表示s[i:j]的字符串的最长回文子序列
+
+
+        // 递推公式
+        // 当s[i] == s[j] 时dp[i][j] = dp[i-1][j-1] + 2
+        // 当s[i] != s[j] 时dp[i][j] = dp[i+1][j] 或者dp[i][j-1] 二者取最大值
+
+        // 初始化
+        // 二维数组的对角线上的元素一定为1，i==j s[i] == s[j] dp[i][i] = 1
+        for (int i = 0; i < s.length(); i++) {
+            dp[i][i] = 1;
+        }
+        int res = 1;
+        // 遍历顺序
+        for (int i = s.length() - 1; i >= 0; i--) {
+            for (int j = i + 1; j < s.length(); j++) {
+                if(s.charAt(i) == s.charAt(j)){
+                    dp[i][j] = dp[i+1][j-1] + 2;
+                }else {
+                    dp[i][j] = Math.max(dp[i + 1][j], dp[i][j-1]);
+                }
+
+                if(dp[i][j] > res){
+                    res = dp[i][j];
+                }
+            }
+        }
+        return res;
+    }
 
 
     public static void main(String[] args) {
