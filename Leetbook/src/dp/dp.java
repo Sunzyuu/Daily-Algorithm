@@ -148,7 +148,6 @@ public class dp {
         return dp[n];
     }
 
-
     /**
      * 01背包问题
      *
@@ -181,7 +180,6 @@ public class dp {
     public static int bag1(int[] weight, int[] value, int bagSize) {
         int[] dp = new int[bagSize + 1];
         dp[0] = 0;
-
         for (int i = 0; i < weight.length; i++) {
             for (int j = bagSize; j >= weight[i]; j--) {
                 dp[j] = Math.max(dp[j], dp[j - weight[i]] + value[i]);
@@ -326,7 +324,6 @@ public class dp {
      * 请你计算并返回可以凑成总金额的硬币组合数。如果任何硬币组合都无法凑出总金额，返回 0 。
      * 假设每一种面额的硬币有无限个。
      * 题目数据保证结果符合 32 位带符号整数。
-     *
      * @param amount
      * @param coins
      * @return
@@ -435,7 +432,6 @@ public class dp {
         return dp[s.length()];
     }
 
-
     /**
      * 198. 打家劫舍
      * 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
@@ -455,7 +451,6 @@ public class dp {
         }
         return dp[nums.length - 1];
     }
-
 
     /**
      * 213. 打家劫舍 II
@@ -680,8 +675,6 @@ public class dp {
          * 同理1,2也是，当连1和2时两条线也时不相交的，所以这里就是求两个数组的最长公共子序列
          */
         int[][] dp = new int[nums1.length + 1][nums2.length + 1];
-
-
         for (int i = 1; i <= nums1.length; i++) {
             for (int j = 1; j <= nums2.length; j++) {
                 if (nums1[i - 1] == nums2[j - 1]) {
@@ -963,8 +956,6 @@ public class dp {
         }
         return res;
     }
-
-
     /**
      * 516. 最长回文子序列
      * 给你一个字符串 s ，找出其中最长的回文子序列，并返回该序列的长度。
@@ -976,8 +967,6 @@ public class dp {
     public int longestPalindromeSubseq(String s) {
         int[][] dp = new int[s.length()][s.length()];
         // dp[i][j]表示s[i:j]的字符串的最长回文子序列
-
-
         // 递推公式
         // 当s[i] == s[j] 时dp[i][j] = dp[i-1][j-1] + 2
         // 当s[i] != s[j] 时dp[i][j] = dp[i+1][j] 或者dp[i][j-1] 二者取最大值
@@ -1003,14 +992,5 @@ public class dp {
             }
         }
         return res;
-    }
-
-
-    public static void main(String[] args) {
-        int[] weight = {1, 3, 4};
-        int[] value = {15, 20, 30};
-        int bagsize = 4;
-        System.out.println(bag(weight, value, bagsize));
-        System.out.println(bag1(weight, value, bagsize));
     }
 }
