@@ -1,5 +1,3 @@
-import netscape.security.UserTarget;
-
 import java.nio.channels.DatagramChannel;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -212,6 +210,57 @@ public class DayTen {
         }
         return sum;
     }
+
+    /**
+     * 84. 柱状图中最大的矩形
+     * 给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1
+     * 求在该柱状图中，能够勾勒出来的矩形的最大面积。
+     * @param heights
+     * @return
+     */
+    public int largestRectangleArea(int[] heights) {
+        int res = 0;
+        //首先找到当前柱子两边第一个小于该柱子的索引值， 因此需要栈辅助实现
+        Stack<Integer> stack = new Stack<Integer>();
+        // 数组扩容，在头和尾各加入一个元素
+        int [] newHeights = new int[heights.length + 2];
+        newHeights[0] = 0;
+        newHeights[newHeights.length - 1] = 0;
+        for (int index = 0; index < heights.length; index++){
+            newHeights[index + 1] = heights[index];
+        }
+        heights = newHeights;
+
+        // 此单调栈为单调递减 即从顶到底为 为递减
+        // 栈中存储的是数组的下标 首先将索引0放入stack
+        stack.push(0);
+        for (int i = 1; i < heights.length; i++) {
+            //判断当前元素与栈顶元素的大小关系
+            // heights[i] > heights[stack.peek()] 则直接入栈
+            if(heights[i] > heights[stack.peek()]){
+                stack.push(i);
+            }else if(heights[i] == heights[stack.peek()]){
+                // 如果遇到相等的高度 那么需要更新索引
+                stack.pop();
+                stack.push(i);
+            }else{
+                while (!stack.isEmpty() && heights[i] < heights[stack.peek()]){
+                    // 如果当前元素小于栈顶元素 则栈顶元素遇到的右侧第一个小于自己的柱子
+                    // 根据单调栈的定义 可以知道栈顶元素的下一个元素就是其左侧第一个小于自己的柱子
+                    // 那么就可以由这三个元素构成矩形
+                    int mid = stack.pop();
+                    int right = i;
+                    int left = stack.peek();
+                    int w = right -left - 1;
+                    int h = heights[mid];
+                    res = Math.max(res, w * h);
+                }
+                stack.push(i);
+            }
+        }
+        return res;
+    }
+
 
     /**
      * 2022.9.16
