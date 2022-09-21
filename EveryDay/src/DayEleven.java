@@ -1,7 +1,5 @@
 import java.net.Inet4Address;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class DayEleven {
     /**
@@ -143,6 +141,88 @@ public class DayEleven {
             nums[resultIndex ++] = odd[i];
         }
         return nums;
+    }
+
+    /**
+     * 1002. 查找共用字符
+     * 给你一个字符串数组 words ，请你找出所有在 words 的每个字符串中都出现的共用字符（ 包括重复字符），并以数组形式返回。你可以按 任意顺序 返回答案。
+     * @param words
+     * @return
+     */
+    public List<String> commonChars(String[] words) {
+        ArrayList<String> res = new ArrayList<>();
+        if(words.length == 0) return res;
+
+        int[] hash = new int[26];
+        for (int i = 0; i < words[0].length(); i++) {
+            hash[words[0].charAt(i) - 'a']++;
+        }
+
+        // 统计除了第一个字符串字符出现的频率
+        for (int i = 1; i < words.length; i++) {
+            int[] hashStr = new int[26];
+            for (int j = 0; j < words[0].length(); j++) {
+                hashStr[words[i].charAt(j) - 'a']++;
+            }
+            for (int j = 0; j < 26; j++) {
+                hash[j] = Math.min(hash[j], hashStr[j]); //取字符出现频率的最小值 保证hash中的数组是字符在每个单中都出现的次数
+            }
+        }
+
+
+        for (int i = 0; i < 26; i++) {
+            while (hash[i] > 0){
+                char tempChar = (char) (i + 'a');
+                res.add(String.valueOf(tempChar));
+                hash[i]--;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 925. 长按键入
+     * 你的朋友正在使用键盘输入他的名字 name。偶尔，在键入字符 c 时，按键可能会被长按，而字符可能被输入 1 次或多次。
+     * 你将会检查键盘输入的字符 typed。如果它对应的可能是你的朋友的名字（其中一些字符可能被长按），那么就返回 True。
+     * @param name
+     * @param typed
+     * @return
+     */
+    public boolean isLongPressedName(String name, String typed) {
+        int p1 = 0;
+        int p2 = 0;
+
+        while(p1 < name.length() && p2 < typed.length()){
+            if(name.charAt(p1) == typed.charAt(p2)){
+                p1 ++;
+                p2 ++;
+            }else {
+                if(p2 == 0){
+                    return false;
+                }
+                while(p2 < typed.length() - 1 && typed.charAt(p2) == typed.charAt(p2 - 1)){
+                    p2 ++;
+                }
+                if(name.charAt(p1) == typed.charAt(p2)){
+                    p1 ++;
+                    p2 ++;
+                }else {
+                    return false;
+                }
+            }
+        }
+
+        if(p1 < name.length()){
+            return false;
+        }
+        while (p2 < typed.length()){
+            if(typed.charAt(p2) == typed.charAt(p2 - 1)){
+                p2 ++;
+            }else {
+                return false;
+            }
+        }
+        return true;
     }
 
 
