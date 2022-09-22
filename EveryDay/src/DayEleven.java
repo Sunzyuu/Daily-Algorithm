@@ -1,7 +1,5 @@
 import java.net.Inet4Address;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class DayEleven {
     /**
@@ -115,35 +113,116 @@ public class DayEleven {
     }
 
     /**
-     * 34. 在排序数组中查找元素的第一个和最后一个位置
-     * 给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。
-     * 如果数组中不存在目标值 target，返回 [-1, -1]。
-     * 你必须设计并实现时间复杂度为 O(log n) 的算法解决此问题。
+     * 922. 按奇偶排序数组 II
+     * 给定一个非负整数数组 nums，  nums 中一半整数是 奇数 ，一半整数是 偶数 。
+     * 对数组进行排序，以便当 nums[i] 为奇数时，i 也是 奇数 ；当 nums[i] 为偶数时， i 也是 偶数 。
+     * 你可以返回 任何满足上述条件的数组作为答案 。
      * @param nums
-     * @param target
      * @return
      */
-    //先找>=target的第一个
-    //再找>target的第一个
-    //我真是这辈子都不想看见这题
-    public int[] searchRange(int[] nums, int target) {
-        int l=search(nums,target);
-        int r=search(nums,target+1);
-        if(l==nums.length||nums[l]!=target)
-            return new int[]{-1,-1};
-        return new int[]{l,r-1};
-    }
-    //找>=target的第一个
-    public int search(int[] nums,int target){
-        int l=0,r=nums.length;
-        while(l<r){
-            int mid=(r+l)>>1;
-            if(nums[mid]>=target)
-                r=mid;
-            else
-                l=mid+1;
+    public int[] sortArrayByParityII(int[] nums) {
+
+        int[] odd = new int[nums.length / 2];
+        int[] even = new int[nums.length / 2];
+
+        int index1 = 0;
+        int index2 = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if(nums[i] % 2 == 0){
+                even[index1++] = nums[i];
+            }else {
+                odd[index2++] = nums[i];
+            }
         }
-        return l;
+
+        int resultIndex = 0;
+        for (int i = 0; i < nums.length / 2; i++) {
+            nums[resultIndex ++] = even[i];
+            nums[resultIndex ++] = odd[i];
+        }
+        return nums;
+    }
+
+    /**
+     * 1002. 查找共用字符
+     * 给你一个字符串数组 words ，请你找出所有在 words 的每个字符串中都出现的共用字符（ 包括重复字符），并以数组形式返回。你可以按 任意顺序 返回答案。
+     * @param words
+     * @return
+     */
+    public List<String> commonChars(String[] words) {
+        ArrayList<String> res = new ArrayList<>();
+        if(words.length == 0) return res;
+
+        int[] hash = new int[26];
+        for (int i = 0; i < words[0].length(); i++) {
+            hash[words[0].charAt(i) - 'a']++;
+        }
+
+        // 统计除了第一个字符串字符出现的频率
+        for (int i = 1; i < words.length; i++) {
+            int[] hashStr = new int[26];
+            for (int j = 0; j < words[0].length(); j++) {
+                hashStr[words[i].charAt(j) - 'a']++;
+            }
+            for (int j = 0; j < 26; j++) {
+                hash[j] = Math.min(hash[j], hashStr[j]); //取字符出现频率的最小值 保证hash中的数组是字符在每个单中都出现的次数
+            }
+        }
+
+
+        for (int i = 0; i < 26; i++) {
+            while (hash[i] > 0){
+                char tempChar = (char) (i + 'a');
+                res.add(String.valueOf(tempChar));
+                hash[i]--;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 925. 长按键入
+     * 你的朋友正在使用键盘输入他的名字 name。偶尔，在键入字符 c 时，按键可能会被长按，而字符可能被输入 1 次或多次。
+     * 你将会检查键盘输入的字符 typed。如果它对应的可能是你的朋友的名字（其中一些字符可能被长按），那么就返回 True。
+     * @param name
+     * @param typed
+     * @return
+     */
+    public boolean isLongPressedName(String name, String typed) {
+        int p1 = 0;
+        int p2 = 0;
+
+        while(p1 < name.length() && p2 < typed.length()){
+            if(name.charAt(p1) == typed.charAt(p2)){
+                p1 ++;
+                p2 ++;
+            }else {
+                if(p2 == 0){
+                    return false;
+                }
+                while(p2 < typed.length() - 1 && typed.charAt(p2) == typed.charAt(p2 - 1)){
+                    p2 ++;
+                }
+                if(name.charAt(p1) == typed.charAt(p2)){
+                    p1 ++;
+                    p2 ++;
+                }else {
+                    return false;
+                }
+            }
+        }
+
+        if(p1 < name.length()){
+            return false;
+        }
+        while (p2 < typed.length()){
+            if(typed.charAt(p2) == typed.charAt(p2 - 1)){
+                p2 ++;
+            }else {
+                return false;
+            }
+        }
+        return true;
     }
 
 
