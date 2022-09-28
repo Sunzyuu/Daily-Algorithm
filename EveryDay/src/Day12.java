@@ -202,24 +202,23 @@ public class Day12 {
         int pivot = nums[left];
         int le = left + 1;
         int ge = right;
-
+        // 此处循环的作用就是nums[left + 1..le) <= pivot;
+        // all in nums(ge..right] >= pivot;
         while (true) {
             while (le <= ge && nums[le] < pivot) {
                 le++;
             }
-
             while (le <= ge && nums[ge] > pivot) {
                 ge--;
             }
-
             if (le >= ge) {
                 break;
             }
+            // 此时的nums[le] > pivot 并且 nums[ge] < pivot 因此需要更换二者的位置
             swap(nums, le, ge);
             le++;
             ge--;
         }
-
         swap(nums, left, ge);
         return ge;
     }
@@ -314,6 +313,70 @@ public class Day12 {
         return 0;
     }
 
+    public int findKthLargest1(int[] nums, int k) {
+        // 创建优先队列
+        // 创建一个容量为k的小根堆，那么遍历整个数组的过程中维护这个小根堆，那么其根元素就是数组中第k大的数
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(k, Comparator.comparingInt(a -> a));
+        for (int i = 0; i < k; i++) {  // 首先将数组中的前k个数放入队列中
+            priorityQueue.offer(nums[i]);
+        }
+
+        for (int i = k; i < nums.length; i++) { // 继续遍历k到nums.length-1的元素，如果当前元素大于队列的第一个元素，那么就将队列的头元素弹出放入当前元素
+            Integer peek = priorityQueue.peek();
+            if(nums[i] > peek){
+                priorityQueue.poll();
+                priorityQueue.offer(nums[i]);
+            }
+        }
+        return priorityQueue.peek();
+    }
+
+
+    /**
+     * 面试题 17.09. 第 k 个数
+     * 有些数的素因子只有 3，5，7，请设计一个算法找出第 k 个数。注意，不是必须有这些素因子，而是必须不包含其他的素因子。例如，前几个数按顺序应该是 1，3，5，7，9，15，21。
+     * @param k
+     * @return
+     */
+    public int getKthMagicNumber(int k) {
+        int[] factors = {3, 5, 7};
+        HashSet<Long> set = new HashSet<>();
+        PriorityQueue<Long> priorityQueue = new PriorityQueue<>();
+        set.add(1L);
+        priorityQueue.offer(1L);
+        int res = 0;
+        for (int i = 0; i < k; i++) {
+            long curr = priorityQueue.poll();
+            for (int factor : factors) {
+                long next = factor * curr;
+                res = (int) curr;
+                if(set.add(next)){
+                    priorityQueue.offer(next);
+                }
+            }
+        }
+        return res;
+    }
+
+    public int getKthMagicNumber1(int k) {
+        long[] dp = new long[k + 1];
+        dp[1] = 1;
+        int p1 = 1, p2 = 1, p3 = 1;
+        for (int i = 2; i <= k; i++) {
+            dp[i] = Math.min(dp[p1] * 3, Math.min(dp[p2] * 5,dp[p3]  * 7));
+            // 此处不可以使用if else结构 判断否则答案会变小
+            if(dp[i] == dp[p1] * 3){
+                p1 ++;
+            }
+            if(dp[i] == dp[p2]  * 5){
+                p2 ++;
+            }
+            if(dp[i] == dp[p3] * 7){
+                p3++;
+            }
+        }
+        return (int) dp[k];
+    }
 
     public static void main(String[] args) {
 
