@@ -29,6 +29,47 @@ public class day13 {
         inorder(root.right, nums);
     }
 
+
+    /**
+     * 面试题 01.09. 字符串轮转
+     * 字符串轮转。给定两个字符串s1和s2，请编写代码检查s2是否为s1旋转而成（比如，waterbottle是erbottlewat旋转后的字符串）。
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean isFlipedString(String s1, String s2) {
+        if(s1.length() != s2.length()){
+            return false;
+        }
+        if(s1.equals(s2)){
+            return true;
+        }
+        char[] chars = s1.toCharArray();
+        for (int i = 1; i < s1.length(); i++) {
+            StringBuilder tempSb = new StringBuilder();
+            tempSb.append(chars, i, s1.length() - i);
+            tempSb.append(chars, 0, i);
+            String tempStr = tempSb.toString();
+
+            if(tempStr.equals(s2)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isFlipedString1(String s1, String s2) {
+        if(s1.length() != s2.length()){
+            return false;
+        }
+        String ss = s1 + s1;
+        // 如果两个字符串为旋转字符串，那么s1+s1后的字符串的一个子串一定包含s2
+        if(ss.indexOf(s2) != -1){
+            return true;
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
 
     }
