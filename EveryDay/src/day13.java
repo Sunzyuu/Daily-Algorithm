@@ -70,7 +70,52 @@ public class day13 {
         return false;
     }
 
-    public static void main(String[] args) {
+    public static int maxSubSum(int[] nums){
+        int sum = nums[0];
+        int left = 0;
+        int right = 0;
+        int res = 0;
+        int index = 0;
 
+        for (int i = 1; i < nums.length; i++) {
+            if(sum > 0){      //  如果当前累加的结果大于0 则说明可能是最大值 那么就继续加当前元素
+                sum += nums[i];
+            }else {
+                sum = nums[i];
+                index = i;    // 记录重新累加时的起始index
+            }
+            if(sum > res){
+                res = sum;  // 更新结果
+                left = index; // 更新左右边界
+                right = i;
+            }
+        }
+
+        System.out.println("maxsum is:" + res);
+        System.out.println("startIndex is:" + left);
+        System.out.println("endIndex is:" + right);
+        return res;
+    }
+
+    public static void matrixMultiply(int[] p, int n){
+        int[][] m = new int[n + 1][n + 1];
+        int[][] res = new int[n + 1][n + 1];
+        for (int i = 0; i <= n; i++) {
+            m[i][i] = 0;
+        }
+
+        // n - 1个矩阵连乘
+        for (int i = 2; i <= n; i++) {
+            for (int j = 0; j <= n - i + 1; j++) {
+                
+            }
+        }
+
+        
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {-2,11,-4,13,-5,-2};
+        maxSubSum(nums);
     }
 }
