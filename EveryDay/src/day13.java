@@ -99,18 +99,36 @@ public class day13 {
 
     public static void matrixMultiply(int[] p, int n){
         int[][] m = new int[n + 1][n + 1];
-        int[][] res = new int[n + 1][n + 1];
+        int[][] s = new int[n + 1][n + 1];
         for (int i = 0; i <= n; i++) {
             m[i][i] = 0;
         }
+        for (int i = 0; i < n; i++)	//规模为1时，i=j,计算量m[i][j]=m[i][i]=0;
+            m[i][i] = 0;
+        for (int r = 2; r <= n; r++)	//规模为r时，i<j,计算量m[i][j]=min(m[i][k] + m[k][j] + p[i - 1] * p[k] * p[j])
+        {
+            for (int i = 0; i < n + 1 - r; i++)		//规模为r，开始元素为i,末尾元素j=i
+                // +r-1,末尾元素j<=n,等价于i<=n+1-r ,而i是从0开始，后面不加等号
+            {
+                int j = i + r -1;
+                //p数组为连乘矩阵数组，i从0开始，第i+1个元素，其行数为p[i],列数为p[i+1]
+                //从第一个位置断开的m[i][j]
+                m[i][j] = m[i][i] + m[i+1][j] + p[i] * p[i+1] * p[j+1];
+                s[i][j] = i;
+                //从第k个位置断开的m[i][j]
+                for (int k = 1+i; k < j; k++)
+                {
 
-        // n - 1个矩阵连乘
-        for (int i = 2; i <= n; i++) {
-            for (int j = 0; j <= n - i + 1; j++) {
-                
+                    //用t表示不同断开位置的连乘次数，t最小时候，对应为当前m[i][j]
+                    int t = m[i][k] + m[k+1][j] + p[i] * p[k+1] * p[j+1];
+                    if (t < m[i][j])
+                    {
+                        m[i][j] = t;
+                        s[i][j] = k;  //用s记录断开位置
+                    }
+                }
             }
         }
-
         
     }
 
