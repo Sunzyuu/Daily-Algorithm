@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 public class day13 {
 
@@ -264,6 +263,43 @@ public class day13 {
             }
         }
         return needLeft + needRight;
+    }
+
+    /**
+     * 811. 子域名访问计数
+     * 网站域名 "discuss.leetcode.com" 由多个子域名组成。顶级域名为 "com" ，二级域名为 "leetcode.com" ，最低一级为 "discuss.leetcode.com" 。当访问域名 "discuss.leetcode.com" 时，同时也会隐式访问其父域名 "leetcode.com" 以及 "com" 。
+     * 计数配对域名 是遵循 "rep d1.d2.d3" 或 "rep d1.d2" 格式的一个域名表示，其中 rep 表示访问域名的次数，d1.d2.d3 为域名本身。
+     * 例如，"9001 discuss.leetcode.com" 就是一个 计数配对域名 ，表示 discuss.leetcode.com 被访问了 9001 次。
+     * 给你一个 计数配对域名 组成的数组 cpdomains ，解析得到输入中每个子域名对应的 计数配对域名 ，并以数组形式返回。可以按 任意顺序 返回答案。
+     * @param cpdomains
+     * @return
+     */
+    public List<String> subdomainVisits(String[] cpdomains) {
+        HashMap<String, Integer> hashMap = new HashMap<String, Integer>();
+        int[] counts = new int[cpdomains.length];
+        String[] domains = new String[cpdomains.length];
+
+        for (int i = 0; i < cpdomains.length; i++) {
+            counts[i] = Integer.parseInt(cpdomains[i].split(" ")[0]);
+            domains[i] = cpdomains[i].split(" ")[1];
+        }
+
+        for (int i = 0; i < cpdomains.length; i++) {
+            String[] strings = domains[i].split("\\.");
+            String temp = "";
+            for (int j = strings.length - 1; j >= 0; j--) {
+                temp = strings[j] + temp;
+                hashMap.put(temp, hashMap.getOrDefault(temp, 0) + counts[i]);
+                temp ="." + temp;
+            }
+        }
+
+        List<String> res = new ArrayList<>();
+        Set<String> strings = hashMap.keySet();
+        for (String string : strings) {
+            res.add(hashMap.get(string) + " " + string);
+        }
+        return res;
     }
 
     public static void main(String[] args) {
