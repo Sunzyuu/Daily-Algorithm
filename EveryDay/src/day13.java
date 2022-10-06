@@ -1,3 +1,4 @@
+import javax.print.DocFlavor;
 import java.util.*;
 
 public class day13 {
@@ -302,9 +303,66 @@ public class day13 {
         return res;
     }
 
+    /**
+     * 927. 三等分
+     * 给定一个由 0 和 1 组成的数组 arr ，将数组分成  3 个非空的部分 ，使得所有这些部分表示相同的二进制值。
+     * 如果可以做到，请返回任何 [i, j]，其中 i+1 < j，这样一来：
+     * arr[0], arr[1], ..., arr[i] 为第一部分；
+     * arr[i + 1], arr[i + 2], ..., arr[j - 1] 为第二部分；
+     * arr[j], arr[j + 1], ..., arr[arr.length - 1] 为第三部分。
+     * 这三个部分所表示的二进制值相等。
+     * 如果无法做到，就返回 [-1, -1]
+     * 注意，在考虑每个部分所表示的二进制时，应当将其看作一个整体。例如，[1,1,0] 表示十进制中的 6，而不会是 3。此外，前导零也是被允许的，所以 [0,1,1] 和 [1,1] 表示相同的值。
+     * @param arr
+     * @return
+     */
+    public static int[] threeEqualParts(int[] arr) {
+        int[] record = new int[arr.length + 1];
+
+        int oneCount = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if(arr[i] == 1){
+                record[++oneCount] = i;
+            }
+        }
+
+        if(oneCount == 0){
+            return new int[]{0, arr.length - 1};
+        }
+        if(oneCount % 3 != 0){
+            return new int[]{-1, -1};
+        }
+
+        int gn = oneCount / 3;  // 每组中1的个数
+        int lastZeroCount = arr.length - 1 - record[oneCount];  // 最后一组中末尾0的个数
+        // 每组中末尾0的个数小于lastZeroCount 则没有答案
+        if(record[gn * 2] - record[gn] - 1 < lastZeroCount ||  record[gn * 3] - record[gn * 2] - 1 < lastZeroCount){
+            return new int[]{-1, -1};
+        }
+
+        int tail1 = record[gn] + lastZeroCount;
+        int tail2 = record[gn * 2] + lastZeroCount;
+        int tail3 = record[gn * 3] + lastZeroCount;
+
+        int nums = Math.min(Math.min(tail1 + 1, tail2 - tail1), tail3 - tail2);
+
+        int[] res = new int[]{tail1, tail2 + 1};
+        while(nums-- > 0){
+            if(arr[tail1] != arr[tail2] || arr[tail3] != arr[tail2] ||arr[tail1] != arr[tail3]){
+                return new int[]{-1, -1};
+            }
+            tail1--;
+            tail2--;
+            tail3--;
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
-        int[] nums = {-2,11,-4,13,-5,-2};
+        int[] nums = {1,0,1,0,1};
         maxSubSum(nums);
         reformatNumber("1-23-45 6");
+
+        threeEqualParts(nums);
     }
 }
