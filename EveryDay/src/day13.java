@@ -385,6 +385,37 @@ public class day13 {
     }
 
 
+    /**
+     * 870. 优势洗牌
+     * 给定两个大小相等的数组 nums1 和 nums2，nums1 相对于 nums 的优势可以用满足 nums1[i] > nums2[i] 的索引 i 的数目来描述。
+     * 返回 nums1 的任意排列，使其相对于 nums2 的优势最大化。
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int[] advantageCount(int[] nums1, int[] nums2) {
+        int[] res = new int[nums1.length];
+        Arrays.sort(nums1);
+        //田忌赛马的思路
+        // 如果nums1中的最左边值大于nums2中最左边的值，那么就直接放到res中
+        // 否则就让nums1最左边的值去与nums2中最大值进行比较
+        Integer[] index = new Integer[nums1.length]; //index Array
+        for (int i = 0; i < nums1.length; i++) {
+            index[i] = i;
+        }
+
+        //注意比较器引用的数组需要是对象，所以不能放基本数据类型的数组
+        //根据nums2的值升序，来排序nums2的值的对应下标
+        //排序后index[]中第一个元素是nums2中最小值的下标，第二个元素是nums2中第二小值的下标
+        Arrays.sort(index, (a, b) -> (nums2[a] - nums2[b])); //
+        int left = 0;
+        int right = nums1.length - 1;
+        for (int num : nums1) {
+            int i = num > nums2[index[left]] ? index[left++] : index[right--];
+            res[i] = num;
+        }
+        return res;
+    }
     public static void main(String[] args) {
         int[] nums = {1,0,1,0,1};
         maxSubSum(nums);
