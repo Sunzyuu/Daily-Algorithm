@@ -1,6 +1,7 @@
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 
 public class Day14 {
 
@@ -143,6 +144,60 @@ public class Day14 {
         }
 
         return s1.charAt(diffList.get(0)) == s2.charAt(diffList.get(1)) && s1.charAt(diffList.get(1)) == s2.charAt(diffList.get(0));
+    }
+
+
+    /**
+     * 817. 链表组件
+     * 中等
+     * 给定链表头结点 head，该链表上的每个结点都有一个 唯一的整型值 。同时给定列表 nums，该列表是上述链表中整型值的一个子集。
+     *
+     * 返回列表 nums 中组件的个数，这里对组件的定义为：链表中一段最长连续结点的值（该值必须在列表 nums 中）构成的集合。
+     * @param head
+     * @param nums
+     * @return
+     */
+    public int numComponents(ListNode head, int[] nums) {
+        int res = 0;
+        HashSet<Integer> set = new HashSet<>();
+
+        for (int num : nums) {
+            set.add(num);
+        }
+        while(head!= null){
+            if(set.contains(head.val)){
+                while (head != null && set.contains(head.val)){
+                    head = head.next;
+                }
+                res ++;
+            }else {
+                head = head.next;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 769. 最多能完成排序的块
+     * 中等
+     * 给定一个长度为 n 的整数数组 arr ，它表示在 [0, n - 1] 范围内的整数的排列。
+     * 我们将 arr 分割成若干 块 (即分区)，并对每个块单独排序。将它们连接起来后，使得连接的结果和按升序排序后的原数组相同。
+     * 返回数组能分成的最多块数量。
+     * @param arr
+     * @return
+     */
+    public int maxChunksToSorted(int[] arr) {
+        int res = 0;
+        int max = 0;
+
+        for (int i = 0; i < arr.length; i++) {
+            max = Math.max(max, arr[i]);
+
+            if(max == i){
+                res ++;
+            }
+        }
+        return res;
     }
 
     public static void main(String[] args) {
