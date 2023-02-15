@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class ArrayThink {
 
     public static void main(String[] args) {
-        int[] nums =  new int[]{3,2,2,3};
+        int[] nums = new int[]{3, 2, 2, 3};
 //        System.out.println(removeElement(nums, 3));
 
 
@@ -18,11 +18,11 @@ public class ArrayThink {
         }
     }
 
-    public static int removeElement(int[] nums, int val){
+    public static int removeElement(int[] nums, int val) {
         int index = 0;
         for (int i = 0; i < nums.length; i++) {
-            if(nums[i] != val){
-                nums[index ++] = nums[i];
+            if (nums[i] != val) {
+                nums[index++] = nums[i];
             }
         }
         return index;
@@ -34,12 +34,12 @@ public class ArrayThink {
         int leftIndex = 0;
         int rightIndex = nums.length - 1;
 
-        for (int i = nums.length - 1; i >=0 ; i--) {
-            if(nums[leftIndex] * nums[leftIndex] >= nums[rightIndex] * nums[rightIndex]){
+        for (int i = nums.length - 1; i >= 0; i--) {
+            if (nums[leftIndex] * nums[leftIndex] >= nums[rightIndex] * nums[rightIndex]) {
                 res[i] = nums[leftIndex] * nums[leftIndex];
-                leftIndex ++;
-            }else {
-                res[i] =nums[rightIndex] * nums[rightIndex];
+                leftIndex++;
+            } else {
+                res[i] = nums[rightIndex] * nums[rightIndex];
                 rightIndex--;
             }
         }
@@ -56,13 +56,13 @@ public class ArrayThink {
         for (int i = 0; i < nums.length; i++) {
             sum += nums[i];
             rightIndex++;
-            while(sum >= s){
+            while (sum >= s) {
                 sum -= nums[leftIndex];
                 leftIndex++;
                 res = Math.min(rightIndex - leftIndex, res);
             }
         }
-        return res == Integer.MAX_VALUE ? 0: res;
+        return res == Integer.MAX_VALUE ? 0 : res;
     }
 
 
@@ -70,7 +70,7 @@ public class ArrayThink {
         int[][] res = new int[n][n];
         int left = 0, right = n - 1, top = 0, bottom = n - 1;
         int count = 1;
-        while(count <= n * n ){
+        while (count <= n * n) {
             for (int i = left; i <= right; i++) {
                 res[top][i] = count;
                 count++;
@@ -83,19 +83,19 @@ public class ArrayThink {
             }
             right--;
 
-            for (int i = right; i >= left;  i--) {
+            for (int i = right; i >= left; i--) {
                 res[bottom][i] = count;
                 count++;
             }
             bottom--;
 
-            for (int i = bottom; i >= top ; i--) {
-            res[i][left] = count;
-            count++;
-        }
-        left++;
+            for (int i = bottom; i >= top; i--) {
+                res[i][left] = count;
+                count++;
+            }
+            left++;
 
-    }
+        }
         return res;
     }
 
