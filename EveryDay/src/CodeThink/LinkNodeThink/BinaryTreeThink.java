@@ -101,6 +101,7 @@ public class BinaryTreeThink {
 //    }
 
     ArrayList<Integer> resList;
+
     int maxCount;
     int count;
     TreeNode pre;

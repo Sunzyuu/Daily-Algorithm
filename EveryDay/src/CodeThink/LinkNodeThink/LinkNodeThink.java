@@ -3,7 +3,18 @@ package CodeThink.LinkNodeThink;
 public class LinkNodeThink {
 
     public static void main(String[] args) {
+        ListNode listNode1 = new ListNode(1);
+        ListNode listNode2 = new ListNode(2);
+        ListNode listNode3 = new ListNode(3);
+        ListNode listNode4 = new ListNode(4);
+        ListNode listNode5 = new ListNode(5);
 
+        listNode1.next = listNode2;
+        listNode2.next = listNode3;
+        listNode3.next = listNode4;
+        listNode4.next = listNode5;
+
+        reverseKGroup(listNode1, 2);
     }
 
 
@@ -129,6 +140,52 @@ public class LinkNodeThink {
         }
 
         return null;
+    }
+
+    public static ListNode reverseKGroup (ListNode head, int k) {
+        // write code here
+        if(head == null){
+            return null;
+        }
+        if(head.next == null){
+            return head;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        int len = 0;
+        while(head!=null){
+            head = head.next;
+            len ++;
+        }
+
+        for(int i = 1; i < len; i +=k){
+            reverseBetween(dummy, i, i+k - 1);
+        }
+        int leftLen = len % k;
+        reverseBetween(dummy, len - leftLen + 1, len);
+        return dummy.next;
+    }
+
+
+    public static void reverseBetween (ListNode dummy, int m, int n) {
+        // write code here
+        if(m == n){
+            return;
+        }
+        ListNode preStart = dummy;
+        ListNode start = dummy.next;
+        for (int i = 1; i < m; i++) {
+            preStart = start;
+            start = start.next;
+        }
+
+
+        for (int i = 0; i < n - m; i++) {
+            ListNode temp = start.next;
+            start.next = temp.next;
+            temp.next = preStart.next;
+            preStart.next = temp;
+        }
     }
 
 
